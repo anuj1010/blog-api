@@ -1,7 +1,7 @@
 require("dotenv").config({ path: "./Src/.env" });
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const router = require(__dirname + "/Router");
+const router = require(__dirname + "/router");
 const connectdb = require(__dirname + "/connection");
 const cors = require("cors");
 
