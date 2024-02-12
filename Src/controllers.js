@@ -123,6 +123,12 @@ const getPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(20);
 
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://anuj-blog-insight.netlify.app"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+
     res.status(200).json(posts);
   } catch (error) {
     console.error("Error fetching posts:", error);
