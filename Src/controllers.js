@@ -91,6 +91,9 @@ const post = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
     const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+    if (!decodedToken) {
+      return res.status(401).json({ message: "your session has been expired" });
+    }
     const userId = decodedToken.userId;
 
     const newPost = new PostModel({
@@ -106,9 +109,7 @@ const post = async (req, res) => {
 
     await newPost.save();
 
-    res
-      .status(200)
-      .json({ message: "File uploaded successfully", post: newPost });
+    res.status(200).json({ message: "File uploaded successfully" });
   } catch (error) {
     console.error("Error uploading file:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -187,6 +188,24 @@ const updatePostsWithId = async (req, res) => {
   }
 };
 
+const deletePostWithId = async (req, res) => {
+  const postId = req.params.id;
+  // res.send(postId);
+  // console.log(postId);
+  try {
+    const deletedPost = await PostModel.findByIdAndDelete(postId);
+
+    if (!deletedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   home,
   register,
@@ -197,4 +216,5 @@ module.exports = {
   getPosts,
   getPostsWithId,
   updatePostsWithId,
+  deletePostWithId,
 };

@@ -17,4 +17,6 @@ router
   .route("/post/:id")
   .put(upload.single("cover"), controllers.updatePostsWithId);
 
+router.route("/post/:id").delete(controllers.deletePostWithId);
+
 module.exports = router;
