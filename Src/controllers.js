@@ -127,7 +127,7 @@ const getPosts = async (req, res) => {
       "Access-Control-Allow-Origin",
       "https://anuj-blog-insight.netlify.app"
     );
-    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Credentials", true);
 
     res.status(200).json(posts);
   } catch (error) {
