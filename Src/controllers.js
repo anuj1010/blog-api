@@ -117,11 +117,6 @@ const post = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://anuj-blog-insight.netlify.app"
-  );
-
   try {
     const posts = await PostModel.find()
       .populate("author", ["username"])
