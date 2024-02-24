@@ -2,7 +2,14 @@ const UserModel = require(__dirname + "/Models/usermodel");
 const PostModel = require(__dirname + "/Models/postmodel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
 const SECRET_KEY = process.env.SECRET_KEY;
+
+cloudinary.config({
+  cloud_name: "dfdmlxbsd",
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 const home = async (req, res) => {
   await res.send("router is ready");
@@ -77,13 +84,16 @@ const logout = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    if (!req.file) {
+    // console.log(req.files.cover.tempFilePath);
+    if (!req.files) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const file = await req.file;
+    const file = await req.files.cover;
     const { title, summary, content } = req.body;
-    // console.log(file);
+
+    const result = await cloudinary.uploader.upload(file.tempFilePath);
+    // console.log("result", result);
 
     // Extract user ID from JWT token
     const token = req.cookies.token;
@@ -100,10 +110,7 @@ const post = async (req, res) => {
       title,
       summary,
       content,
-      cover: {
-        data: file.buffer,
-        contentType: file.mimetype,
-      },
+      cover: result.secure_url,
       author: userId,
     });
 
@@ -160,12 +167,10 @@ const updatePostsWithId = async (req, res) => {
     };
 
     // Check if file is uploaded
-    if (req.file) {
-      const file = req.file;
-      updatedFields.cover = {
-        data: file.buffer,
-        contentType: file.mimetype,
-      };
+    if (req.files) {
+      const file = await req.files.cover;
+      const result = await cloudinary.uploader.upload(file.tempFilePath);
+      updatedFields.cover = result.secure_url;
     }
 
     // Update post with the provided fields
