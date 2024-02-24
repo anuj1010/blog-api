@@ -84,8 +84,8 @@ const logout = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    // console.log(req.files.cover.tempFilePath);
-    if (!req.files) {
+    // console.log(req.files.cover);
+    if (!req.files.cover) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
@@ -167,7 +167,7 @@ const updatePostsWithId = async (req, res) => {
     };
 
     // Check if file is uploaded
-    if (req.files) {
+    if (req.files.cover) {
       const file = await req.files.cover;
       const result = await cloudinary.uploader.upload(file.tempFilePath);
       updatedFields.cover = result.secure_url;
