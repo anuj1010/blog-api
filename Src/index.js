@@ -3,7 +3,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const router = require(__dirname + "/router");
 const connectdb = require(__dirname + "/connection");
-const fileUpload = require("express-fileupload");
 const cors = require("cors");
 
 const app = express();
@@ -16,7 +15,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(fileUpload({ useTempFiles: true }));
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/blog", router);

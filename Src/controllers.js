@@ -84,16 +84,12 @@ const logout = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    // console.log(req.files.cover);
-    if (!req.files.cover) {
+    // console.log("path", req.file);
+    if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const file = await req.files.cover;
     const { title, summary, content } = req.body;
-
-    const result = await cloudinary.uploader.upload(file.tempFilePath);
-    // console.log("result", result);
 
     // Extract user ID from JWT token
     const token = req.cookies.token;
@@ -110,7 +106,7 @@ const post = async (req, res) => {
       title,
       summary,
       content,
-      cover: result.secure_url,
+      cover: req.file.path,
       author: userId,
     });
 
@@ -167,10 +163,8 @@ const updatePostsWithId = async (req, res) => {
     };
 
     // Check if file is uploaded
-    if (req.files.cover) {
-      const file = await req.files.cover;
-      const result = await cloudinary.uploader.upload(file.tempFilePath);
-      updatedFields.cover = result.secure_url;
+    if (req.files) {
+      updatedFields.cover = req.file.path;
     }
 
     // Update post with the provided fields
